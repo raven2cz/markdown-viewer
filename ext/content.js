@@ -375,6 +375,110 @@ function restoreDisclosures(state) {
 	})
 }
 
+/**
+ * <div class="top-site-outer">
+ *  <a href="https://www.example.cz/">
+ *    <div class="tile" aria-hidden="true">
+ *      <div class="icon-wrapper" data-fallback="y">
+ *        <div class="top-site-icon rich-icon" style="background-image: url(../attachments/example.svg);"></div>
+ *      </div>
+ *    </div>
+ *    <div class="icon-text">Example Title</div>
+ *  </a>
+ * </div>
+ * 
+ * <icon-button href="..." icon="..." text="..."/>
+ */
+class IconButton extends HTMLElement {
+	constructor() {
+		super();
+	}
+	connectedCallback() {
+		const div = document.createElement('div');
+	    div.setAttribute('class', 'top-site-outer');
+
+		const ahref = document.createElement('a');
+		ahref.href = this.getAttribute('href');
+
+		const divTile = document.createElement('div');
+		divTile.setAttribute('class', 'tile');
+		divTile.ariaHidden = 'true';
+
+		const divWrapper = document.createElement('div');
+		divWrapper.setAttribute('class', 'icon-wrapper');
+		divWrapper.setAttribute('data-fallback', 'y');
+
+		let iconUrl = this.getAttribute('icon');
+		if (iconUrl.includes("@/")) {
+			iconUrl = iconUrl.replace("@", "../attachments");
+		}
+		const divIcon = document.createElement('div');
+		divIcon.setAttribute('class', 'top-site-icon rich-icon');
+		divIcon.style = 'background-image: url(' + iconUrl + ');';
+
+		const divIconText = document.createElement('div');
+		divIconText.setAttribute('class', 'icon-text');
+		const textNode = document.createTextNode(this.getAttribute('text'));
+		divIconText.appendChild(textNode);
+
+		div.appendChild(ahref);
+		ahref.appendChild(divTile);
+		divTile.appendChild(divWrapper);
+		divWrapper.appendChild(divIcon);
+		ahref.appendChild(divIconText);
+
+		this.outerHTML = div.outerHTML;
+	}
+}
+
+/**
+ * <figure class="floating">
+ *   <img src="../attachments/Civ6_Caesar.png">
+ *   <figcaption align="center"><b>Veni, vidi, vici... (47 př. n. l.)</b></figcaption>
+ * </figure>
+ *
+ * <figure-random 
+ *      data-srcs="../attachments/Civ6_Caesar.png; ../attachments/Civ6_Caesar2.png" 
+ *      data-captions="Veni, vidi, vici... (47 př. n. l.); Veni2, vidi2, vici2... (47 př. n. l.)" />
+ */
+class FigureRandom extends HTMLElement {
+	constructor() {
+		super();
+	}
+	connectedCallback() {
+	  const figure = document.createElement('figure');
+	  figure.setAttribute('class', 'floating');
+  
+	  // Take attribute content and put it inside the info span
+	  const srcs = this.getAttribute('data-srcs');
+	  if (srcs) {
+		const asrcs = srcs.split(";");
+		const index = Math.floor(Math.random() * asrcs.length);
+		const src = asrcs[index];
+
+		const captions = this.getAttribute('data-captions');
+		let caption = "";
+		if (captions) {
+			const acaptions = captions.split(";");
+			caption = acaptions[index];
+		}
+  
+		const img = document.createElement('img');
+		img.setAttribute('class', 'rounded-corners');
+		img.src = src;
+		figure.appendChild(img);
+  
+		const figcaption = document.createElement('figcaption');
+		figcaption.style.textAlign = "center";
+		const textNode = document.createTextNode(caption);
+		figcaption.appendChild(textNode);
+		figure.appendChild(figcaption);
+	  }
+
+	  this.outerHTML = figure.outerHTML;
+	}
+}
+
 // Process only if document is unprocessed text.
 const {body} = document;
 if (body.childNodes.length === 1 &&
@@ -406,4 +510,8 @@ if (body.childNodes.length === 1 &&
 	const disclosures = [];
 	window.addEventListener('beforeprint', () => revealDisclosures(disclosures));
 	window.addEventListener('afterprint', () => restoreDisclosures(disclosures));
+
+	// register custom elements
+    customElements.define('figure-random', FigureRandom);
+	customElements.define('icon-button', IconButton);
 }

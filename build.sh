@@ -25,3 +25,4 @@ do
 done
 
 web-ext build -s staging
+#web-ext sign --channel=unlisted --api-key=user:17696275:827 --api-secret=44a8948fefc6e4c2e084c8289d90b10df6247a5c3b07f13ecdcdf63f1920b0b6 -s staging

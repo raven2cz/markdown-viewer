@@ -1,14 +1,14 @@
 {
 	"manifest_version": 2,
 	"name": "Markdown Viewer Webext",
-	"version": "1.8.1",
-	"author": "Keith L Robertson, Cimbali",
+	"version": "3.8.1",
+	"author": "Keith L Robertson, Cimbali, Antonin Fischer (raven2cz)",
 	"homepage_url": "https://github.com/KeithLRobertson/markdown-viewer",
 	"description": "Displays Markdown documents beautified in your browser.",
 
 	"applications": {
 		"gecko": {
-			"id": "{943b8007-a895-44af-a672-4f4ea548c95f}"
+			"id": "{221ebf8c-f9b3-4f45-96bb-bce20d4e1b46}"
 		}
 	},
 
